@@ -315,6 +315,9 @@ public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null) return false;
     
+    // Определяем машинный эпсилон для сравнения
+    private static final double EPSILON = 1e-10;
+    
     // Если объект является ArrayTabulatedFunction, используем оптимизированное сравнение
     if (o instanceof ArrayTabulatedFunction) {
         ArrayTabulatedFunction other = (ArrayTabulatedFunction) o;
@@ -323,9 +326,14 @@ public boolean equals(Object o) {
             return false;
         }
         
-        // Прямое сравнение массивов точек
+        // Прямое сравнение массивов точек с использованием эпсилона
         for (int i = 0; i < pointsCount; i++) {
-            if (!this.points[i].equals(other.points[i])) {
+            FunctionPoint thisPoint = this.points[i];
+            FunctionPoint otherPoint = other.points[i];
+            
+            // Сравнение координат с учетом погрешности
+            if (Math.abs(thisPoint.getX() - otherPoint.getX()) >= EPSILON ||
+                Math.abs(thisPoint.getY() - otherPoint.getY()) >= EPSILON) {
                 return false;
             }
         }
@@ -340,12 +348,14 @@ public boolean equals(Object o) {
             return false;
         }
         
-        // Сравнение через методы интерфейса
+        // Сравнение через методы интерфейса с использованием эпсилона
         for (int i = 0; i < pointsCount; i++) {
             FunctionPoint thisPoint = this.getPoint(i);
             FunctionPoint otherPoint = other.getPoint(i);
             
-            if (!thisPoint.equals(otherPoint)) {
+            // Сравнение координат с учетом погрешности
+            if (Math.abs(thisPoint.getX() - otherPoint.getX()) >= EPSILON ||
+                Math.abs(thisPoint.getY() - otherPoint.getY()) >= EPSILON) {
                 return false;
             }
         }
@@ -354,7 +364,6 @@ public boolean equals(Object o) {
     
     return false;
 }
-
 @Override
 public int hashCode() {
     int hash = pointsCount; // Включаем количество точек в хэш

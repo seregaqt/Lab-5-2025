@@ -47,11 +47,14 @@ public class FunctionPoint implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+    
         FunctionPoint that = (FunctionPoint) o;
-        
-        return Double.compare(that.x, x) == 0 && 
-               Double.compare(that.y, y) == 0;
+    
+        // Использование машинного эпсилона для сравнения double значений
+        private static final double EPSILON = 1e-10;
+    
+        return Math.abs(that.x - x) < EPSILON && 
+               Math.abs(that.y - y) < EPSILON;
     }
     
     @Override

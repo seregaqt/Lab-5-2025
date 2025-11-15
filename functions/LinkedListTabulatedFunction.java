@@ -423,6 +423,9 @@ public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null) return false;
     
+    // Определяем машинный эпсилон для сравнения
+    private static final double EPSILON = 1e-10;
+    
     // Если объект является LinkedListTabulatedFunction, используем оптимизированное сравнение
     if (o instanceof LinkedListTabulatedFunction) {
         LinkedListTabulatedFunction other = (LinkedListTabulatedFunction) o;
@@ -431,12 +434,17 @@ public boolean equals(Object o) {
             return false;
         }
         
-        // Прямое сравнение узлов списка
+        // Прямое сравнение узлов списка с использованием эпсилона
         FunctionNode thisNode = this.head.getNext();
         FunctionNode otherNode = other.head.getNext();
         
         for (int i = 0; i < pointsCount; i++) {
-            if (!thisNode.getPoint().equals(otherNode.getPoint())) {
+            FunctionPoint thisPoint = thisNode.getPoint();
+            FunctionPoint otherPoint = otherNode.getPoint();
+            
+            // Сравнение координат с учетом погрешности
+            if (Math.abs(thisPoint.getX() - otherPoint.getX()) >= EPSILON ||
+                Math.abs(thisPoint.getY() - otherPoint.getY()) >= EPSILON) {
                 return false;
             }
             thisNode = thisNode.getNext();
@@ -453,12 +461,14 @@ public boolean equals(Object o) {
             return false;
         }
         
-        // Сравнение через методы интерфейса
+        // Сравнение через методы интерфейса с использованием эпсилона
         for (int i = 0; i < pointsCount; i++) {
             FunctionPoint thisPoint = this.getPoint(i);
             FunctionPoint otherPoint = other.getPoint(i);
             
-            if (!thisPoint.equals(otherPoint)) {
+            // Сравнение координат с учетом погрешности
+            if (Math.abs(thisPoint.getX() - otherPoint.getX()) >= EPSILON ||
+                Math.abs(thisPoint.getY() - otherPoint.getY()) >= EPSILON) {
                 return false;
             }
         }
